@@ -4,22 +4,22 @@ name: Deploy flows to Workspace
 on:
   workflow_call:
     inputs:
-      prefect-api-key:
-        description: "Prefect API Key for Prefect Cloud"
-        required: true
-        type: string
-      prefect-api-url:
-        description: "Prefect API URL to Prefect Cloud"
-        required: true
-        type: string
       prefect-workspace:
         description: "Prefect workspace to deploy to"
         required: true
         type: string
+    secrets:
+      prefect-api-key:
+        description: "Prefect API Key for Prefect Cloud"
+        required: true
+      prefect-api-url:
+        description: "Prefect API URL to Prefect Cloud"
+        required: true
+      
 
 env:
-  PREFECT_API_KEY: ${{ inputs.prefect-api-key }}
-  PREFECT_API_URL: ${{ inputs.prefect-api-url }}
+  PREFECT_API_KEY: ${{ secrets.prefect-api-key }}
+  PREFECT_API_URL: ${{ secrets.prefect-api-url }}
 
 jobs:
   deploy_flows:
