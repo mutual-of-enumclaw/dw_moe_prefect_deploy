@@ -1,71 +1,49 @@
-# Deploys changed flows to the appropriate Prefect Cloud workspace
-name: Deploy flows to Workspace
+name: Prefect Deploy to Amazon ECS
 
 on:
-  workflow_call:
-    inputs:
-      prefect-workspace:
-        description: "Prefect workspace to deploy to"
-        required: true
-        type: string
-    secrets:
-      prefect-api-key:
-        description: "Prefect API Key for Prefect Cloud"
-        required: true
-      prefect-api-url:
-        description: "Prefect API URL to Prefect Cloud"
-        required: true
-      
+  push:
+    branches:
+      - dev
+      - tst
+      - prd
 
 env:
-  PREFECT_API_KEY: ${{ secrets.prefect-api-key }}
-  PREFECT_API_URL: ${{ secrets.prefect-api-url }}
+  AWS_REGION: us-west-2 # This is our AWS region
+  ECR_REPO_NAME: 674071931206.dkr.ecr.us-west-2.amazonaws.com/${{ github.event.repository.name }} # Save the ECR Repo path/URL to be used in the prefect.yaml
+  GIT_REPO_NAME: ${{ github.event.repository.name }}
+  GIT_REPO_URL: ${{ github.server_url }}/${{ github.repository}}.git # Save the Git Repo URL to be used in the prefect.yaml file
+  GIT_REPO_BRANCH: ${{ github.ref_name }} # Save the Git Repo Branch to be used in the prefect.yaml file
 
 jobs:
-  deploy_flows:
-    name: "Deploy Flows"
+  deploy:
+    name: Deploy
     runs-on: ubuntu-latest
-    
-    permissions:
-      contents: read
+    # environment: development
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
         with:
-          fetch-depth: 0
-  
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v4
+          aws-access-key-id: ${{ secrets.GENDEV_DEPLOY_USER_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.GENDEV_DEPLOY_USER_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
+
+      - uses: int128/create-ecr-repository-action@v1
         with:
-          python-version: "3.10"
-          cache: "pip"
-
-      - name: Install Prefect
+          repository: ${{ env.GIT_REPO_NAME }}
+          public: false
+      
+      - name: Prefect Deploy
+        env:
+          PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
+          PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
         run: |
-          pip install prefect
-
-      - name: Get list of modified python files
-        id: getfile
-        run: |
-          files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^.*\.py$' | tr '\n' ',')
-          echo "Modified Python files: $files"
-          echo "files=$files" >> $GITHUB_ENV
-
-      - name: Set Prefect Workspace
-        run: prefect cloud workspace set -w ${{ inputs.prefect-workspace }}
-
-      - name: Deploy flows in branch defined in modified files
-        run: |
-          entrypoints=$(python scripts/get_flow_entrypoints.py)
-          echo "Found entrypoints: $entrypoints"
-          IFS="," read -ra ENTRYPOINTS <<< "$entrypoints"
-          IFS="," read -ra FILES <<< $files
-          for entrypoint in "${ENTRYPOINTS[@]}"; do
-              file=$(echo $entrypoint | cut -d ":" -f 1)
-              if [[ " ${FILES[@]} " =~ " ${file} " ]]; then
-                  echo "Deploying flow: $entrypoint"
-                  prefect --no-prompt deploy $entrypoint
-              else
-                  echo "Skipping flow: $entrypoint"
-              fi
-          done
+          pip install -r requirements.txt
+          prefect deploy --name ${{ env.GIT_REPO_BRANCH }}
