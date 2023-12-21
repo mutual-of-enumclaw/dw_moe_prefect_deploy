@@ -35,7 +35,10 @@ jobs:
         with:
           repository: ${{ env.GIT_REPO_NAME }}
           public: false
-      
+
+      - name: Set Prefect Workspace
+        run: prefect cloud workspace set --workspace "upsilon36-lesath/dw-workspace"
+
       - name: Prefect Deploy
         env:
           PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
