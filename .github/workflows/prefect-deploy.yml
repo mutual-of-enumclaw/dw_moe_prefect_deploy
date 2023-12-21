@@ -36,6 +36,11 @@ jobs:
           repository: ${{ env.GIT_REPO_NAME }}
           public: false
 
+      - name: Install Python Requirements
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
       - name: Set Prefect Workspace
         run: prefect cloud workspace set --workspace "upsilon36-lesath/dw-workspace"
 
@@ -43,6 +48,4 @@ jobs:
         env:
           PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
           PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
-        run: |
-          pip install -r requirements.txt
-          prefect deploy --name ${{ env.GIT_REPO_BRANCH }}
+        run: prefect deploy --name ${{ env.GIT_REPO_BRANCH }}
