@@ -42,6 +42,9 @@ jobs:
           pip install -r requirements.txt
 
       - name: Set Prefect Workspace
+        env:
+          PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
+          PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
         run: prefect cloud workspace set --workspace "upsilon36-lesath/dw-workspace"
 
       - name: Prefect Deploy
