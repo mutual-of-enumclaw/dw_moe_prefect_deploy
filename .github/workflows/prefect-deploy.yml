@@ -9,6 +9,7 @@ env:
   GIT_REPO_NAME: ${{ github.event.repository.name }}
   GIT_REPO_URL: ${{ github.server_url }}/${{ github.repository}}.git # Save the Git Repo URL to be used in the prefect.yaml file
   GIT_REPO_BRANCH: ${{ github.ref_name }} # Save the Git Repo Branch to be used in the prefect.yaml file
+  OS_ENV: ${{ github.ref_name }}
 
 jobs:
   deploy:
