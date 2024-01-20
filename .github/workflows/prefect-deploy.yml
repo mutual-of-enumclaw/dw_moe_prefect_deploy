@@ -46,7 +46,7 @@ jobs:
         env:
           PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
           PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
-        run: prefect cloud workspace set --workspace "upsilon36-lesath/dw-workspace"
+        run: prefect cloud workspace set --workspace "${{ vars.PREFECT_WORKSPACE }}"
 
       - name: Prefect Deploy
         env:
