@@ -52,4 +52,4 @@ jobs:
         env:
           PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
           PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
-        run: prefect deploy --name ${{ env.GIT_REPO_BRANCH }}-${{ env.GIT_REPO_NAME }}
+        run: prefect deploy -n ${{ env.GIT_REPO_BRANCH }}-*
