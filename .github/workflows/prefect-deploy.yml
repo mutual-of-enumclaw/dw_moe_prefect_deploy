@@ -4,6 +4,7 @@ on:
   workflow_call:
 
 env:
+  PREFECT_WORKSPACE: mutual-of-enumclaw/dw-workspace
   AWS_REGION: us-west-2 # This is our AWS region
   ECR_REPO_NAME: 674071931206.dkr.ecr.us-west-2.amazonaws.com/${{ github.event.repository.name }} # Save the ECR Repo path/URL to be used in the prefect.yaml
   GIT_REPO_NAME: ${{ github.event.repository.name }}
@@ -15,7 +16,6 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    # environment: development
 
     steps:
       - name: Checkout
@@ -46,7 +46,7 @@ jobs:
         env:
           PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
           PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
-        run: prefect cloud workspace set --workspace "${{ vars.PREFECT_WORKSPACE }}"
+        run: prefect cloud workspace set --workspace "${{ env.PREFECT_WORKSPACE }}"
 
       - name: Prefect Deploy
         env:
