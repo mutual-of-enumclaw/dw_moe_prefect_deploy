@@ -54,4 +54,7 @@ jobs:
         env:
           PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
           PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
-        run: prefect deploy -n ${{ env.GIT_REPO_BRANCH }}-*
+        run: |
+          git config --global --add url."https://${{ secrets.DEPLOY_USER_GITHUB_TOKEN }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+          git config --global --add url."https://${{ secrets.DEPLOY_USER_GITHUB_TOKEN }}:x-oauth-basic@github.com/".insteadOf "git@github.com:"
+          prefect deploy -n ${{ env.GIT_REPO_BRANCH }}-*
