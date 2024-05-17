@@ -61,7 +61,7 @@ jobs:
       #       }
 
       - name: Print file contents
-        run: cat .github/workflow/lifecycle-policy.json
+        run: cat .github/workflows/lifecycle-policy.json
 
       - uses: int128/create-ecr-repository-action@v1
         with:
