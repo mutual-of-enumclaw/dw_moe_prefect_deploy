@@ -42,22 +42,22 @@ jobs:
         with:
           name: "lifecycle-policy.json"
           json: |
-            {\n
-              "rules": [\n
-                  {\n
-                      "rulePriority": 1,\n
-                      "description": "Expire images where count is greater than 3",\n
-                      "selection": {\n
-                          "tagStatus": "untagged",\n
-                          "countType": "imageCountMoreThan",\n
-                          "countUnit": "imageCount",\n
-                          "countNumber": 3\n
-                      },\n
-                      "action": {\n
-                          "type": "expire"\n
-                      }\n
-                  }\n
-              ]\n
+            {
+              "rules": [
+                  {
+                      "rulePriority": 1,
+                      "description": "Expire images where count is greater than 3",
+                      "selection": {
+                          "tagStatus": "untagged",
+                          "countType": "imageCountMoreThan",
+                          "countUnit": "imageCount",
+                          "countNumber": 3
+                      },
+                      "action": {
+                          "type": "expire"
+                      }
+                  }
+              ]
             }
 
       - name: Print file contents
