@@ -40,7 +40,7 @@ jobs:
         with:
           repository: ${{ env.GIT_REPO_NAME }}
           public: false
-          lifecycle-policy: .github/workflows/lifecycle-policy.json
+          lifecycle-policy: https://raw.githubusercontent.com/mutual-of-enumclaw/dw_moe_prefect_deploy/main/.github/workflows/lifecycle-policy.json
 
       - name: Install Python Requirements
         run: |
