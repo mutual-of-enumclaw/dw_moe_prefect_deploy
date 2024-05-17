@@ -61,13 +61,13 @@ jobs:
       #       }
 
       - name: Print file contents
-        run: cat lifecycle-policy.json
+        run: cat .github/workflow/lifecycle-policy.json
 
       - uses: int128/create-ecr-repository-action@v1
         with:
           repository: ${{ env.GIT_REPO_NAME }}
           public: false
-          lifecycle-policy: lifecycle-policy.json
+          lifecycle-policy: .github/workflow/lifecycle-policy.json
 
       - name: Install Python Requirements
         run: |
