@@ -40,7 +40,7 @@ jobs:
         with:
           repository: ${{ env.GIT_REPO_NAME }}
           public: false
-          lifecycle-policy: /lifecycle-policy.json
+          lifecycle-policy: .github/workflows/lifecycle-policy.json
 
       - name: Install Python Requirements
         run: |
