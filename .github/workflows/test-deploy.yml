@@ -41,7 +41,7 @@ jobs:
         uses: jsdaniell/create-json@v1.2.3
         with:
           name: "lifecycle-policy.json"
-          json: > 
+          json: |\n
             {\n
               "rules": [\n
                   {\n
