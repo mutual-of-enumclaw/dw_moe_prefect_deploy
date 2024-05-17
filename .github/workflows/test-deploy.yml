@@ -44,19 +44,19 @@ jobs:
           json: |
             {
               "rules": [
-                {
-                  "rulePriority": 1,
-                  "description": "Expire images where count is greater than 3",
-                  "selection": {
-                    "tagStatus": "untagged",
-                    "countType": "imageCountMoreThan",
-                    "countUnit": "imageCount",
-                    "countNumber": 3
-                  },
-                  "action": {
-                    "type": "expire"
+                  {
+                      "rulePriority": 1,
+                      "description": "Expire images where count is greater than 3",
+                      "selection": {
+                          "tagStatus": "untagged",
+                          "countType": "imageCountMoreThan",
+                          "countUnit": "imageCount",
+                          "countNumber": 3
+                      },
+                      "action": {
+                          "type": "expire"
+                      }
                   }
-                }
               ]
             }
 
