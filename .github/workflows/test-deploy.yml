@@ -36,29 +36,29 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2.0.1
 
-      - name: create-json
-        id: create-lifecycle-policy
-        uses: jsdaniell/create-json@v1.2.3
-        with:
-          name: "lifecycle-policy.json"
-          json: |
-            {
-              "rules": [
-                  {
-                      "rulePriority": 1,
-                      "description": "Expire images where count is greater than 3",
-                      "selection": {
-                          "tagStatus": "untagged",
-                          "countType": "imageCountMoreThan",
-                          "countUnit": "imageCount",
-                          "countNumber": 3
-                      },
-                      "action": {
-                          "type": "expire"
-                      }
-                  }
-              ]
-            }
+      # - name: create-json
+      #   id: create-lifecycle-policy
+      #   uses: jsdaniell/create-json@v1.2.3
+      #   with:
+      #     name: "lifecycle-policy.json"
+      #     json: |
+      #       {
+      #         "rules": [
+      #             {
+      #                 "rulePriority": 1,
+      #                 "description": "Expire images where count is greater than 3",
+      #                 "selection": {
+      #                     "tagStatus": "untagged",
+      #                     "countType": "imageCountMoreThan",
+      #                     "countUnit": "imageCount",
+      #                     "countNumber": 3
+      #                 },
+      #                 "action": {
+      #                     "type": "expire"
+      #                 }
+      #             }
+      #         ]
+      #       }
 
       - name: Print file contents
         run: cat lifecycle-policy.json
