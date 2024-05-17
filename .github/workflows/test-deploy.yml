@@ -60,6 +60,9 @@ jobs:
               ]\n
             }
 
+      - name: Print file contents
+        run: cat lifecycle-policy.json
+
       - uses: int128/create-ecr-repository-action@v1
         with:
           repository: ${{ env.GIT_REPO_NAME }}
