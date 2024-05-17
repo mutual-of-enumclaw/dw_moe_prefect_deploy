@@ -36,11 +36,35 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2.0.1
 
+      - name: create-json
+        id: create-lifecycle-policy
+        uses: jsdaniell/create-json@v1.2.3
+        with:
+          name: "lifecycle-policy.json"
+          json: > 
+            {\n
+              "rules": [\n
+                  {\n
+                      "rulePriority": 1,\n
+                      "description": "Expire images where count is greater than 3",\n
+                      "selection": {\n
+                          "tagStatus": "untagged",\n
+                          "countType": "imageCountMoreThan",\n
+                          "countUnit": "imageCount",\n
+                          "countNumber": 3\n
+                      },\n
+                      "action": {\n
+                          "type": "expire"\n
+                      }\n
+                  }\n
+              ]\n
+            }
+
       - uses: int128/create-ecr-repository-action@v1
         with:
           repository: ${{ env.GIT_REPO_NAME }}
           public: false
-          lifecycle-policy: https://raw.githubusercontent.com/mutual-of-enumclaw/dw_moe_prefect_deploy/main/.github/workflows/lifecycle-policy.json
+          lifecycle-policy: lifecycle-policy.json
 
       - name: Install Python Requirements
         run: |
