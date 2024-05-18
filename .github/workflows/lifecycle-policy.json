@@ -6,7 +6,6 @@
             "selection": {
                 "tagStatus": "untagged",
                 "countType": "imageCountMoreThan",
-                "countUnit": "imageCount",
                 "countNumber": 3
             },
             "action": {
