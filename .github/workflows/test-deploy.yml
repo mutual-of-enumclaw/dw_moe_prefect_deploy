@@ -36,38 +36,35 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2.0.1
 
-      # - name: create-json
-      #   id: create-lifecycle-policy
-      #   uses: jsdaniell/create-json@v1.2.3
-      #   with:
-      #     name: "lifecycle-policy.json"
-      #     json: |
-      #       {
-      #         "rules": [
-      #             {
-      #                 "rulePriority": 1,
-      #                 "description": "Expire images where count is greater than 3",
-      #                 "selection": {
-      #                     "tagStatus": "untagged",
-      #                     "countType": "imageCountMoreThan",
-      #                     "countUnit": "imageCount",
-      #                     "countNumber": 3
-      #                 },
-      #                 "action": {
-      #                     "type": "expire"
-      #                 }
-      #             }
-      #         ]
-      #       }
+      - name: Create an ECR Lifecycle Policy
+        id: create-lifecycle-policy
+        uses: jsdaniell/create-json@v1.2.3
+        with:
+          name: "lifecycle-policy.json"
+          json: |
+            {
+              "rules": [
+                  {
+                      "rulePriority": 1,
+                      "description": "Expire images where count is greater than 3",
+                      "selection": {
+                          "tagStatus": "untagged",
+                          "countType": "imageCountMoreThan",
+                          "countNumber": 3
+                      },
+                      "action": {
+                          "type": "expire"
+                      }
+                  }
+              ]
+            }
 
-      - name: Print file contents
-        run: cat .github/workflows/lifecycle-policy.json
-
-      - uses: int128/create-ecr-repository-action@v1
+      - name: Create ECR Repository with Lifecycle Policy
+        uses: int128/create-ecr-repository-action@v1
         with:
           repository: ${{ env.GIT_REPO_NAME }}
           public: false
-          lifecycle-policy: .github/workflows/lifecycle-policy.json
+          lifecycle-policy: lifecycle-policy.json
 
       - name: Install Python Requirements
         run: |
