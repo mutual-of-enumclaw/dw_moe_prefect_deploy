@@ -67,7 +67,7 @@ jobs:
           lifecycle-policy: lifecycle-policy.json
 
       - name: Install Python Requirements
-        run:
+        run: |
           python -m venv venv
           source venv/bin/activate
           python -m pip install --upgrade pip
