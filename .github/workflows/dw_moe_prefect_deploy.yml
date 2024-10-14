@@ -86,4 +86,5 @@ jobs:
           PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
           GITHUB_TOKEN: ${{ secrets.DEPLOY_USER_GITHUB_TOKEN }}
         run: |
+          source venv/bin/activate
           prefect deploy -n ${{ env.GIT_REPO_BRANCH }}-*
