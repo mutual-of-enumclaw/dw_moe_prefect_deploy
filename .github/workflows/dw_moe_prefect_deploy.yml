@@ -68,9 +68,7 @@ jobs:
 
       - name: Install Python Requirements
         run: |
-          python -m venv venv
-          source venv/bin/activate
-          python -m pip install --upgrade pip
+          python -m pip install --upgrade pip --break-system-packages
           git config --global url."https://${{ secrets.DEPLOY_USER_GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
           pip install -r requirements.txt
 
@@ -86,5 +84,4 @@ jobs:
           PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
           GITHUB_TOKEN: ${{ secrets.DEPLOY_USER_GITHUB_TOKEN }}
         run: |
-          source venv/bin/activate
           prefect deploy -n ${{ env.GIT_REPO_BRANCH }}-*
