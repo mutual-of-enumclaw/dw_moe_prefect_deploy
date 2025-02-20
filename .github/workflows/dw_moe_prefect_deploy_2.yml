@@ -69,9 +69,10 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          prefect-api-key: ${{ secrets.PREFECT_API_KEY }}
           python-version: "3.12"
           cache: "pip"
+      
+      - run: pip install -r requirements.txt
 
       - name: Set Prefect Workspace
         env:
