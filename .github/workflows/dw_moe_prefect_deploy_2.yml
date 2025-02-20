@@ -1,1 +1,87 @@
+name: Prefect Deploy to Amazon ECS
 
+on:
+  workflow_call:
+
+env:
+  PREFECT_WORKSPACE: mutual-of-enumclaw/dw-workspace
+  AWS_REGION: us-west-2 # This is our AWS region
+  AWS_ACCOUNT_ID: ${{ github.ref_name == 'prd' && 891377030377 || 980555964133}} # Set AWS Account Id based on environment name
+  ECR_REPO_NAME: ${{ github.ref_name == 'prd' && 891377030377 || 980555964133}}.dkr.ecr.us-west-2.amazonaws.com/${{ github.event.repository.name }} # Save the ECR Repo path/URL to be used in the prefect.yaml
+  GIT_REPO_NAME: ${{ github.event.repository.name }}
+  GIT_REPO_URL: ${{ github.server_url }}/${{ github.repository}}.git # Save the Git Repo URL to be used in the prefect.yaml file
+  GIT_REPO_BRANCH: ${{ github.ref_name }} # Save the Git Repo Branch to be used in the prefect.yaml file
+  OS_ENV: ${{ github.ref_name }}
+
+jobs:
+  deploy:
+    name: Deploy
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/github_deployment_role
+          aws-region: ${{ env.AWS_REGION }}
+      - run: aws sts get-caller-identity
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2.0.1
+
+      - name: Create an ECR Lifecycle Policy
+        id: create-lifecycle-policy
+        uses: jsdaniell/create-json@v1.2.3
+        with:
+          name: "lifecycle-policy.json"
+          json: |
+            {
+              "rules": [
+                  {
+                      "rulePriority": 1,
+                      "description": "Expire images where count is greater than 3",
+                      "selection": {
+                          "tagStatus": "untagged",
+                          "countType": "imageCountMoreThan",
+                          "countNumber": 3
+                      },
+                      "action": {
+                          "type": "expire"
+                      }
+                  }
+              ]
+            }
+
+      - name: Create ECR Repository with Lifecycle Policy
+        uses: int128/create-ecr-repository-action@v1
+        with:
+          repository: ${{ env.GIT_REPO_NAME }}
+          public: false
+          lifecycle-policy: lifecycle-policy.json
+
+      - name: Install Python Requirements
+        run: |
+          python -m pip install --upgrade pip
+          git config --global url."https://${{ secrets.DEPLOY_USER_GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+          pip install -r requirements.txt
+
+      - name: Set Prefect Workspace
+        env:
+          PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
+          PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
+        run: prefect cloud workspace set --workspace "${{ env.PREFECT_WORKSPACE }}"
+
+      - name: Prefect Deploy
+        env:
+          PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
+          PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
+          GITHUB_TOKEN: ${{ secrets.DEPLOY_USER_GITHUB_TOKEN }}
+        run: |
+          prefect deploy -n ${{ env.GIT_REPO_BRANCH }}-*
