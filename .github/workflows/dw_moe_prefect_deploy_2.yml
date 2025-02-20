@@ -66,11 +66,10 @@ jobs:
           public: false
           lifecycle-policy: lifecycle-policy.json
 
-      - name: Install Python Requirements
-        run: |
-          python -m pip install --upgrade pip
-          git config --global url."https://${{ secrets.DEPLOY_USER_GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
-          pip install -r requirements.txt
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
       - name: Set Prefect Workspace
         env:
