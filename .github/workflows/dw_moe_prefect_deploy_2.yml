@@ -85,3 +85,7 @@ jobs:
         with:
           deployment-names: ${{ env.GIT_REPO_BRANCH }}-*
           requirements-file-paths: requirements.txt
+        env:
+          PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
+          PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
+          GITHUB_TOKEN: ${{ secrets.DEPLOY_USER_GITHUB_TOKEN }}
