@@ -74,12 +74,6 @@ jobs:
       - run: git config --global url."https://${{ secrets.DEPLOY_USER_GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
       - run: pip install -r requirements.txt
 
-      - name: Prefect Auth
-        uses: PrefectHQ/actions-prefect-auth@v1
-        with:
-          prefect-api-key: ${{ secrets.PREFECT_API_KEY }}
-          prefect-workspace: ${{ env.PREFECT_WORKSPACE }}
-
       - name: Run Prefect Deploy
         uses: PrefectHQ/actions-prefect-deploy@v4
         with:
