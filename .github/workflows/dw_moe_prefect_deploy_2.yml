@@ -78,7 +78,7 @@ jobs:
         uses: PrefectHQ/actions-prefect-auth@v1
         with:
           prefect-api-key: ${{ secrets.PREFECT_API_KEY }}
-          prefect-workspace: ${{ secrets.PREFECT_WORKSPACE }}
+          prefect-workspace: ${{ env.PREFECT_WORKSPACE }}
 
       - name: Run Prefect Deploy
         uses: PrefectHQ/actions-prefect-deploy@v4
