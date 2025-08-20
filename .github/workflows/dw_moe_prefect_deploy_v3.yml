@@ -66,10 +66,10 @@ jobs:
           public: false
           lifecycle-policy: lifecycle-policy.json
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+      - name: Setup Git
+        # uses: actions/setup-python@v5
+        # with:
+        #  python-version: "3.11"
       - run: git config --global url."https://${{ secrets.DEPLOY_USER_GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
 
       - name: Run Prefect Deploy
