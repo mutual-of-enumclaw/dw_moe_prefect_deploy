@@ -6,8 +6,8 @@ on:
 env:
   PREFECT_WORKSPACE: mutual-of-enumclaw/dw-workspace
   AWS_REGION: us-west-2 # This is our AWS region
-  AWS_ACCOUNT_ID: ${{ github.ref_name == 'prd' && 891377030377 || 980555964133}} # Set AWS Account Id based on environment name
-  ECR_REPO_NAME: ${{ github.ref_name == 'prd' && 891377030377 || 980555964133}}.dkr.ecr.us-west-2.amazonaws.com/${{ github.event.repository.name }} # Save the ECR Repo path/URL to be used in the prefect.yaml
+  AWS_ACCOUNT_ID: ${{ (github.ref_name == 'prd' || github.ref_name == 'acc') && 891377030377 || 980555964133}} # Set AWS Account Id based on environment name
+  ECR_REPO_NAME: ${{ (github.ref_name == 'prd' || github.ref_name == 'acc') && 891377030377 || 980555964133}}.dkr.ecr.us-west-2.amazonaws.com/${{ github.event.repository.name }} # Save the ECR Repo path/URL to be used in the prefect.yaml
   GIT_REPO_NAME: ${{ github.event.repository.name }}
   GIT_REPO_URL: ${{ github.server_url }}/${{ github.repository}}.git # Save the Git Repo URL to be used in the prefect.yaml file
   GIT_REPO_BRANCH: ${{ github.ref_name }} # Save the Git Repo Branch to be used in the prefect.yaml file
