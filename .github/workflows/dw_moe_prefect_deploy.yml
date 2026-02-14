@@ -73,6 +73,7 @@ jobs:
         uses: PrefectHQ/actions-prefect-deploy@v4
         with:
           deployment-names: ${{ env.GIT_REPO_BRANCH }}-*
+          pyproject-toml-path: ./pyproject.toml
         env:
           PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
           PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
