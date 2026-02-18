@@ -75,7 +75,7 @@ jobs:
       - name: Setup Python and install dependencies
         run: |
           uv venv
-          uv pip install .
+          uv sync --no-dev
 
       - name: Run Prefect Deploy
         uses: PrefectHQ/actions-prefect-deploy@v4
