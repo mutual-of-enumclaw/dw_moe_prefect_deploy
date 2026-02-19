@@ -69,13 +69,13 @@ jobs:
       - name: Setup Git
         run: git config --global url."https://${{ secrets.DEPLOY_USER_GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
 
-      - name: Setup uv
-        uses: astral-sh/setup-uv@v7
+      # - name: Setup uv
+      #   uses: astral-sh/setup-uv@v7
 
-      - name: Setup Python and install dependencies
-        run: |
-          uv venv
-          uv sync --no-dev
+      # - name: Setup Python and install dependencies
+      #   run: |
+      #     uv venv
+      #     uv sync --no-dev
 
       - name: Run Prefect Deploy
         uses: PrefectHQ/actions-prefect-deploy@v4
