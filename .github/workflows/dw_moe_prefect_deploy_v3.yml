@@ -77,10 +77,6 @@ jobs:
           EOF
           echo "UV_CONSTRAINT=/tmp/constraints.txt" >> $GITHUB_ENV
 
-      - name: Verify OpenSSL versions before deploy
-        run: |
-          uv pip freeze 2>/dev/null | grep -E 'pyOpenSSL|cryptography|prefect|snowflake' || true
-
       - name: Run Prefect Deploy
         uses: PrefectHQ/actions-prefect-deploy@v4
         with:
